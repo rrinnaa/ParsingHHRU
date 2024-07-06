@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  bot:
+    build: ./bot
+    container_name: telegram_bot
+    volumes:
+      - ./bot:/usr/src/app
+    environment:
+      - DATABASE_PATH=/db/vacancies.db
+    command: ["python", "bot.py"]
+
+  parser:
+    build: ./parser
+    container_name: vacancy_parser
+    volumes:
+      - ./parser:/usr/src/app
+      - ./db:/db
+    depends_on:
+      - db
+    command: ["python", "parser.py"]
+
+  db:
+    build: ./db  
+    container_name: db
+    volumes:
+      - ./db:/db
